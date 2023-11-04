@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="movie" type="com.example.favoritemovies.model.Movie"/>
+    </data>
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            app:cardCornerRadius="4dp">
+
+        <LinearLayout
+                      android:orientation="vertical"
+                      android:padding="8dp"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/movieNameTextView"
+                    android:text="@{movie.movieName}"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+            />
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/movieDescriptionTextView"
+                    android:text="@{movie.movieDescription}"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+            />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

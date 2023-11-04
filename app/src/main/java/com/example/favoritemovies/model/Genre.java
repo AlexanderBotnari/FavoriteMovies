@@ -2,11 +2,11 @@ package com.example.favoritemovies.model;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
-import com.example.favoritemovies.BR;
 
 @Entity(tableName = "genres_table")
 public class Genre extends BaseObservable {
@@ -43,5 +43,10 @@ public class Genre extends BaseObservable {
     public void setName(String name) {
         this.name = name;
         notifyPropertyChanged(BR.name);
+    }
+
+    @Override
+    public String toString() {
+        return this.getName();
     }
 }

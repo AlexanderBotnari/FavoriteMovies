@@ -1,43 +1,68 @@
 package com.example.favoritemovies;
 
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import com.example.favoritemovies.databinding.ActivityMainBinding;
-
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.favoritemovies.databinding.ActivityMainBinding;
+import com.example.favoritemovies.model.Genre;
+import com.example.favoritemovies.model.Movie;
+import com.example.favoritemovies.viewmodel.MainActivityViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
-    private ActivityMainBinding binding;
+    private MainActivityViewModel mainActivityViewModel;
+
+    private ActivityMainBinding activityMainBinding;
+
+    private MainActivityClickHandlers mainActivityClickHandlers;
+    private Genre selectedGenre;
+
+    private ArrayList<Genre> genreArrayList;
+    private ArrayList<Movie> movieArrayList;
+
+    private RecyclerView recyclerView;
+    private MovieAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        activityMainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(activityMainBinding.getRoot());
 
-        setSupportActionBar(binding.toolbar);
+        setSupportActionBar(activityMainBinding.toolbar);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        mainActivityViewModel = new ViewModelProvider.AndroidViewModelFactory(getApplication()).create(MainActivityViewModel.class);
+        mainActivityClickHandlers = new MainActivityClickHandlers();
+        activityMainBinding.setClickHandler(mainActivityClickHandlers);
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        mainActivityViewModel.getGenres().observe(this, new Observer<List<Genre>>() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onChanged(List<Genre> genres) {
+                genreArrayList = (ArrayList<Genre>) genres;
+                showInSpinner();
             }
         });
+
+
+    }
+
+    private void showInSpinner() {
+        ArrayAdapter<Genre> genreArrayAdapter = new ArrayAdapter<>(this, R.layout.spinner_item, genreArrayList);
+        genreArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        activityMainBinding.setSpinnerAdapter(genreArrayAdapter);
     }
 
     @Override
@@ -62,10 +87,41 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
+    public class MainActivityClickHandlers {
+        public void onFabClicked(View view) {
+            Toast.makeText(MainActivity.this, "Fab clicked!", Toast.LENGTH_SHORT).show();
+        }
+
+        public void onSelectedItem(AdapterView<?> parent, View view, int position, long id) {
+
+            selectedGenre = (Genre) parent.getItemAtPosition(position);
+
+            String message = "id is " + selectedGenre.getId() + " name is " + selectedGenre.getName();
+
+            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+
+            loadGenresMoviesInArrayList(selectedGenre.getId());
+        }
+    }
+
+    private void loadGenresMoviesInArrayList(int genreId) {
+        mainActivityViewModel.getGenreMovies(genreId).observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                movieArrayList = (ArrayList) movies;
+                loadRecyclerView();
+            }
+        });
+    }
+
+    private void loadRecyclerView(){
+        recyclerView = activityMainBinding.secondaryLayout.recyclerView;
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        movieAdapter = new MovieAdapter();
+        movieAdapter.setMovieArrayList(movieArrayList);
+        recyclerView.setAdapter(movieAdapter);
+
     }
 }

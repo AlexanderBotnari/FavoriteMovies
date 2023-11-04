@@ -2,11 +2,11 @@ package com.example.favoritemovies.model;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
+import androidx.databinding.library.baseAdapters.BR;
 import androidx.room.*;
-import com.example.favoritemovies.BR;
 
 @Entity(tableName = "movies_table", foreignKeys = @ForeignKey(entity = Genre.class, parentColumns = "id",
-        childColumns = "genreId", onDelete = ForeignKey.CASCADE))
+        childColumns = "genre_id", onDelete = ForeignKey.CASCADE))
 public class Movie extends BaseObservable {
 
     @PrimaryKey(autoGenerate = true)
@@ -23,9 +23,9 @@ public class Movie extends BaseObservable {
     public Movie() {
     }
 
-    public Movie(int movieId, String name, String movieDescription, int genreId) {
+    public Movie(int movieId, String movieName, String movieDescription, int genreId) {
         this.movieId = movieId;
-        this.movieName = name;
+        this.movieName = movieName;
         this.movieDescription = movieDescription;
         this.genreId = genreId;
     }
@@ -68,5 +68,10 @@ public class Movie extends BaseObservable {
     public void setGenreId(int genreId) {
         this.genreId = genreId;
         notifyPropertyChanged(BR.genreId);
+    }
+
+    @Override
+    public String toString() {
+        return movieName;
     }
 }
