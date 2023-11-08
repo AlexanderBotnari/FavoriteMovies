@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable name="clickHandlers" type="com.example.favoritemovies.AddEditActivity.AddEditActivityClickHandlers"/>
+        <variable name="movie" type="com.example.favoritemovies.model.Movie"/>
+    </data>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="8dp"
+            tools:context=".AddEditActivity">
+
+            <TextView
+                    android:id="@+id/movieNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Name"
+                    android:textSize="25sp"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+            />
+
+            <EditText
+                    android:id="@+id/movieNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name"
+                    android:text="@={movie.movieName}"
+                    android:textSize="25sp"
+            />
+
+            <TextView
+                    android:id="@+id/movieDescriptionTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textSize="25sp"
+                    android:padding="8dp"
+                    android:textStyle="bold"
+            />
+
+            <EditText
+                    android:id="@+id/movieDescriptionEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:text="@={movie.movieDescription}"
+                    android:textSize="20sp"
+            />
+
+            <Button
+                    android:id="@+id/okButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="OK"
+                    android:padding="8dp"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:onClick="@{clickHandlers::onOkButtonClicked}"
+                    android:layout_marginTop="200dp"
+            />
+    </LinearLayout>
+</layout>
